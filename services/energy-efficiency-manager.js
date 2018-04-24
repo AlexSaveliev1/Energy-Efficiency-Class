@@ -32,7 +32,7 @@ const createOne = ({ weight, co2 }) => {
         reject(err);
       }
 
-      resolve({ efcId: result.insertId, efc });
+      resolve({ id: result.insertId, weight, co2, efc });
     });
   });
 };
