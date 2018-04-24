@@ -1,20 +1,16 @@
-const mysql = require('mysql');
 const EFC = require('../utils/energy-efficiency-class');
-const databaseConfig = require('../configs/database');
-
-const connection = mysql.createConnection({
-  host: databaseConfig.HOST,
-  user: databaseConfig.USER,
-  password: databaseConfig.PASSWORD,
-  database: databaseConfig.DATABASE_NAME
-});
+const { createConnectionToDatabase } = require('../initializers/database/connections');
 
 const getAll = () => {
+  const connection = createConnectionToDatabase();
+
   return new Promise((resolve, reject) => {
     connection.query(`SELECT * FROM cars`, function (err, result) {
       if (err) {
         return reject(err);
       }
+
+      connection.end();
 
       return resolve(result);
     });
@@ -22,6 +18,7 @@ const getAll = () => {
 };
 
 const createOne = ({ weight, co2 }) => {
+  const connection = createConnectionToDatabase();
   const efc = EFC.calculate({ co2, co2RefValue: EFC.create(weight) });
 
   return new Promise((resolve, reject) => {
@@ -32,7 +29,9 @@ const createOne = ({ weight, co2 }) => {
         reject(err);
       }
 
-      resolve({ id: result.insertId, weight, co2, efc });
+      connection.end();
+
+      return resolve({ id: result.insertId, weight, co2, efc });
     });
   });
 };
