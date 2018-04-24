@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const efc = require('./routes/energy-efficiency-class');
 const { PORT } = require('./configs/config');
-const database = require('./utils/database');
+const database = require('./initializers/database');
 
 const app = express();
 database.create();
